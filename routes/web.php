@@ -25,6 +25,11 @@ Route::get('/', function () {
     ]);
 });
 
+// demo view page
+Route::get('/demo', function () {
+    return Inertia::render('Demo/ViewDemo');
+})->name('demo');
+
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
