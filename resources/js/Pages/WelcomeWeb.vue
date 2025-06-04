@@ -1,8 +1,12 @@
 <script setup>
-import { Link } from '@inertiajs/vue3'
+import { Link,Head } from '@inertiajs/vue3'
+// useHead({
+//   title: 'WelcomeWeb'
+// })
 </script>
 
 <template>
+    <Head title="Welcome" />
   <div class="min-h-screen flex flex-col bg-gray-50 text-gray-800">
     <!-- Navbar -->
     <nav class="bg-white shadow sticky top-0 z-50">

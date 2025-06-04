@@ -27,7 +27,7 @@ Route::get('/', function () {
 
 // demo view page
 Route::get('/demo', function () {
-    return Inertia::render('Demo/ViewDemo');
+    return Inertia::render('ViewDemo');
 })->name('demo');
 
 Route::get('/dashboard', function () {

@@ -29,62 +29,83 @@ const submit = () => {
     <GuestLayout>
         <Head title="Log in" />
 
-        <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
-            {{ status }}
+        <div class="flex flex-col lg:flex-row bg-white rounded-lg shadow-lg overflow-hidden">
+            <!-- Left: Illustration or Logo -->
+            <div class="hidden lg:flex lg:w-2/2 bg-blue-600 text-white items-center justify-center p-10">
+                <div class="text-center space-y-4">
+                    <img src="../../../../public/build/images/logo.png" alt="Logo" class="h-16 mx-auto" />
+                    <h2 class="text-3xl font-bold">Welcome Back</h2>
+                    <p class="text-lg">Log in to continue building with Codewing.</p>
+                </div>
+            </div>
+
+            <!-- Right: Login Form -->
+            <div class="w-full lg:w-2/2 p-8 sm:p-12">
+                <h1 class="text-2xl font-bold text-gray-800 mb-4">Sign in to your account</h1>
+                <p class="text-sm text-gray-500 mb-6">Enter your credentials below to access your dashboard.</p>
+
+                <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
+                    {{ status }}
+                </div>
+
+                <form @submit.prevent="submit" class="space-y-6">
+                    <div>
+                        <InputLabel for="email" value="Email" />
+                        <TextInput
+                            id="email"
+                            type="email"
+                            class="mt-1 block w-full"
+                            v-model="form.email"
+                            required
+                            autofocus
+                            autocomplete="username"
+                        />
+                        <InputError class="mt-2" :message="form.errors.email" />
+                    </div>
+
+                    <div>
+                        <InputLabel for="password" value="Password" />
+                        <TextInput
+                            id="password"
+                            type="password"
+                            class="mt-1 block w-full"
+                            v-model="form.password"
+                            required
+                            autocomplete="current-password"
+                        />
+                        <InputError class="mt-2" :message="form.errors.password" />
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                        <label class="flex items-center text-sm text-gray-600">
+                            <Checkbox name="remember" v-model:checked="form.remember" class="mr-2" />
+                            Remember me
+                        </label>
+                        <Link
+                            v-if="canResetPassword"
+                            :href="route('password.request')"
+                            class="text-sm text-blue-600 hover:underline"
+                        >
+                            Forgot password?
+                        </Link>
+                    </div>
+
+                    <div>
+                        <PrimaryButton
+                            class="w-full justify-center"
+                            :class="{ 'opacity-25': form.processing }"
+                            :disabled="form.processing"
+                        >
+                            Log in
+                        </PrimaryButton>
+                    </div>
+
+                    <div class="text-sm text-center text-gray-600 mt-6">
+                        Don’t have an account?
+                        <Link href="/register" class="text-blue-600 hover:underline">Sign up</Link>
+                    </div>
+                </form>
+            </div>
         </div>
-
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="email" value="Email" />
-
-                <TextInput
-                    id="email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    v-model="form.email"
-                    required
-                    autofocus
-                    autocomplete="username"
-                />
-
-                <InputError class="mt-2" :message="form.errors.email" />
-            </div>
-
-            <div class="mt-4">
-                <InputLabel for="password" value="Password" />
-
-                <TextInput
-                    id="password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    v-model="form.password"
-                    required
-                    autocomplete="current-password"
-                />
-
-                <InputError class="mt-2" :message="form.errors.password" />
-            </div>
-
-            <div class="block mt-4">
-                <label class="flex items-center">
-                    <Checkbox name="remember" v-model:checked="form.remember" />
-                    <span class="ml-2 text-sm text-gray-600">Remember me</span>
-                </label>
-            </div>
-
-            <div class="flex items-center justify-end mt-4">
-                <Link
-                    v-if="canResetPassword"
-                    :href="route('password.request')"
-                    class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                    Forgot your password?
-                </Link>
-
-                <PrimaryButton class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Log in
-                </PrimaryButton>
-            </div>
-        </form>
     </GuestLayout>
 </template>
