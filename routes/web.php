@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CreateTemplatesController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -29,6 +30,16 @@ Route::get('/', function () {
 Route::get('/demo', function () {
     return Inertia::render('ViewDemo');
 })->name('demo');
+Route::get('/get-templates/{id}', [CreateTemplatesController::class, 'get_template_by_id'])->name('get-templates');
+
+
+Route::get('template/new-template',function () {
+    return Inertia::render('Templates/NewSite');
+})->name('template/new-template');
+
+Route::get('view-templates', function () {
+    return Inertia::render('Templates/Views/TemplateView');
+})->name('view-templates');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');

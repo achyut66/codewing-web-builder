@@ -1,0 +1,22 @@
+{
+  "name": "Modern Portfolio",
+  "sections": [
+    {
+      "type": "hero",
+      "props": {
+        "title": "Hi, I'm John",
+        "subtitle": "A web developer",
+        "backgroundImage": "/images/hero.jpg"
+      }
+    },
+    {
+      "type": "services",
+      "props": {
+        "items": [
+          { "icon": "code", "title": "Development", "description": "Full-stack development" },
+          { "icon": "design", "title": "Design", "description": "UI/UX design" }
+        ]
+      }
+    }
+  ]
+}

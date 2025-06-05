@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CreateTemplatesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,3 +18,10 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+// Example API route for creating a new template
+Route::get('/api/templates', [CreateTemplatesController::class, 'fetchTemplates'])->name('api.templates.fetch');
+Route::post('/templates/store', [CreateTemplatesController::class, 'store'])->name('api.templates.store');
+
+
+
