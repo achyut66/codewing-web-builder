@@ -39,7 +39,7 @@ const submit = async () => {
             <!-- Left: Illustration or Logo -->
             <div class="hidden lg:flex lg:w-2/2 bg-blue-600 text-white items-center justify-center p-10">
                 <div class="text-center space-y-4">
-                    <img src="../../../../public/build/images/logo.png" alt="Logo" class="h-16 mx-auto" />
+                    <img src="/build/images/logo.png" alt="Logo" class="h-16 mx-auto" />
                     <h2 class="text-3xl font-bold">Welcome Back</h2>
                     <p class="text-lg">Log in to continue building with Codewing.</p>
                 </div>
