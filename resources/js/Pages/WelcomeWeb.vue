@@ -48,7 +48,6 @@ onMounted(() => {
     </nav>
 
     <header ref="homeRef" class="flex-grow flex items-center justify-center text-center px-4 min-h-[80vh]">
-      <!-- <section ref="homeRef" class="w-full"> -->
       <div class="max-w-2xl animate-fade-in">
         <h1 class="text-5xl font-extrabold mb-4 leading-tight">Build your dream website in minutes</h1>
         <p class="text-lg text-gray-600 mb-6">Codewing Website Builder lets you design, publish, and manage your site — no coding needed.</p>
@@ -57,7 +56,6 @@ onMounted(() => {
           <Link href="/demo" class="text-blue-600 hover:underline font-medium py-3 px-6">View Demo</Link>
         </div>
       </div>
-      <!-- </section> -->
     </header>
 
     <section ref="featuresRef" class="py-20 bg-white animate-fade-in">
