@@ -46,7 +46,7 @@ Git (optional but recommended)
 
 ## 🛠️ Installation Steps
 
-1. git clone https://github.com/your-username/your-repo-name.git
+1. git clone https://github.com/achyut66/codewing-web-builder.git
 2. cd your-repo-name
 3. composer install
 4. npm install
@@ -55,7 +55,4 @@ Git (optional but recommended)
 7. php artisan migrate
 8. npm run dev
 9. php artisan serve
-
-## And visit
-
-http://localhost:8000
+10. http://localhost:8000
