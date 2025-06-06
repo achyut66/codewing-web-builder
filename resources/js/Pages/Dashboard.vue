@@ -14,7 +14,6 @@ const userId = ref(user.id || null);
 
 // fetch from only user_id
 const userIdData = ref([]);
-console.log('userId:', userIdData.value); // Check the user ID
 const fetchUserId = async () => {
   try {
     const url = route('api.templates.get-by-user-id') + `?user_id=${encodeURIComponent(userId.value)}`;
@@ -139,34 +138,46 @@ const submitForm = async () => {
 
           <!-- Template Cards -->
           <!-- Template Cards -->
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-  <template v-for="template in userIdData" :key="template.id">
-    <div class="bg-white p-4 shadow rounded-lg group relative transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl">
-      <h3 class="text-md font-semibold text-gray-800">{{ template.title }}</h3>
-      <p class="text-sm text-gray-500 mt-1">{{ template.description }}</p>
-      <p class="text-xs text-gray-400 mt-1">
-        Last updated: {{ new Date(template.updated_at || template.created_at).toLocaleDateString() }}
-      </p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <template v-for="template in userIdData" :key="template.id">
+              <div class="bg-white p-4 shadow rounded-lg group relative transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl">
+                <img
+                  v-if="template.thumbnail"
+                  :src="template.thumbnail" 
+                  alt="Template Image"
+                  class="w-full h-32 object-cover rounded-md mb-2"
+                />
+                <img
+                  v-else
+                  src="/images/default-template.png"
+                  alt="Default Template Image"
+                  class="w-full h-32 object-cover rounded-md mb-2"
+                />
+                <h3 class="text-md font-semibold text-gray-800">{{ template.title }}</h3>
+                <p class="text-sm text-gray-500 mt-1">{{ template.description }}</p>
+                <p class="text-xs text-gray-400 mt-1">
+                  Last updated: {{ new Date(template.updated_at || template.created_at).toLocaleDateString() }}
+                </p>
 
-      <div
-        class="absolute bottom-4 right-4 space-x-2 opacity-0 group-hover:opacity-100 transition-opacity"
-      >
-        <Link
-          :href="`/sites/${template.id}`"
-          class="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
-        >
-          View
-        </Link>
-        <Link
-          :href="`/sites/${template.id}/edit`"
-          class="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
-          Edit
-        </Link>
-      </div>
-    </div>
-  </template>
-</div>
+                <div
+                  class="absolute bottom-4 right-4 space-x-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  <Link
+                    :href="`/sites/${template.id}`"
+                    class="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+                  >
+                    View
+                  </Link>
+                  <Link
+                    :href="`/get-templates/${template.id}`"
+                    class="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
+                  >
+                    Edit
+                  </Link>
+                </div>
+              </div>
+            </template>
+          </div>
 
         </section>
       </main>

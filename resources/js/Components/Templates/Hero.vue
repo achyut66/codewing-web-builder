@@ -111,40 +111,55 @@ function removeMenuItem(index) {
   navbarItems.value.splice(index, 1)
 }
 
-async function saveAll() {
-  loading.value = true
-  message.value = ''
-  error.value = ''
-
-  try {
-    const payload = {
-      template_id: templateId,  // <-- send this so backend knows which template to update
-      user_id: user.id, // Assuming you have user ID available
-      navbar: navbarItems.value,
-      hero: {
-        title: heroTitle.value,
-        subtitle: heroSubtitle.value,
-        backgroundImage: heroBackgroundImage.value,
-      },
-      mainContent: {
-        heading: mainHeading.value,
-        content: mainContent.value,
-      },
-      footer: {
-        text: footerText.value,
-      },
-    }
-
-    await axios.post('/api/templates/update-page', payload)
-    message.value = 'Content saved successfully!'
-    window.location.href = '/dashboard';
-
-  } catch (e) {
-    error.value = 'Failed to save content.'
-  } finally {
-    loading.value = false
+// image file save 
+const heroImageFile = ref(null);
+const selectedHeroImageFile = ref(null);
+function onHeroImageChange(event) {
+  heroImageFile.value = event.target.files[0];
+  const file = event.target.files[0];
+  if (file) {
+    selectedHeroImageFile.value = file;
+    heroBackgroundImage.value = URL.createObjectURL(file); // live preview
   }
 }
+
+async function saveAll() {
+  loading.value = true;
+  message.value = '';
+  error.value = '';
+
+  try {
+    const formData = new FormData();
+    formData.append('template_id', templateId);
+    formData.append('user_id', user.id);
+
+    formData.append('navbar', JSON.stringify(navbarItems.value));
+    formData.append('hero_title', heroTitle.value);
+    formData.append('hero_subtitle', heroSubtitle.value);
+    formData.append('main_heading', mainHeading.value);
+    formData.append('main_content', mainContent.value);
+    formData.append('footer_text', footerText.value);
+
+    if (heroImageFile.value) {
+      formData.append('hero_image', heroImageFile.value);
+    }
+
+    await axios.post('/api/templates/update-page', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    message.value = 'Content saved successfully!';
+    window.location.href = '/dashboard';
+  } catch (e) {
+    error.value = 'Failed to save content.';
+  } finally {
+    loading.value = false;
+  }
+}
+
+
 
 
 </script>
@@ -268,13 +283,12 @@ async function saveAll() {
 
     <label class="block mb-1 font-medium">Background Image</label>
     <input
-      v-model="heroBackgroundImage"
-      type="text"
+      type="file"
       class="w-full border rounded px-3 py-1"
-      placeholder="Image URL"
+      @change="onHeroImageChange"
     />
   </div>
-        </div>
+</div>
         <!-- Main Content Section -->
         <div class="mb-6 border rounded shadow">
   <!-- Dropdown Header -->

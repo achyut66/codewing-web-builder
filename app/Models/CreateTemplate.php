@@ -16,6 +16,7 @@ class CreateTemplate extends Model
         'design',
         'user_id',
         'template_id',
+        'thumbnail',
     ];
 
 }

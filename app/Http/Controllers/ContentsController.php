@@ -3,29 +3,72 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\TemplateContent;
+use Illuminate\Support\Facades\Storage;
+use App\Models\CreateTemplate; 
+use Intervention\Image\Facades\Image;
+
 
 class ContentsController extends Controller
 {
-    public function updatePage(Request $request)
-{
-    $templateId = $request->input('template_id');
-    $userId = $request->input('user_id');
-    $data = $request->except(['template_id', 'user_id']); // Extract content data only
 
-    if (!$templateId || !$userId) {
-        return response()->json(['error' => 'Template ID and User ID are required'], 400);
+public function updatePage(Request $request)
+{
+    $request->validate([
+        'template_id' => 'required',
+        'user_id' => 'required|exists:users,id',
+        'hero_image' => 'nullable|image|max:2048',
+    ]);
+
+    $heroImagePath = null;
+    $thumbnailPath = null;
+
+    if ($request->hasFile('hero_image')) {
+        $heroImagePath = $request->file('hero_image')->store('template_images', 'public');
+
+        // Create thumbnail
+        $image = Image::make(storage_path('app/public/' . $heroImagePath))->fit(300, 200);
+        $thumbnailName = 'thumb_' . basename($heroImagePath);
+        $thumbnailPath = 'template_thumbnails/' . $thumbnailName;
+
+        Storage::disk('public')->put($thumbnailPath, (string) $image->encode());
+        $publicThumbnailUrl = Storage::url($thumbnailPath);
+        // Update or insert thumbnail into CreateTemplate
+        CreateTemplate::updateOrCreate(
+            ['template_id' => $request->template_id],
+            ['thumbnail' => $publicThumbnailUrl]
+        );
     }
 
-    // Corrected: Merge template_id and user_id as attributes to match
-    $templateContent = \App\Models\TemplateContent::updateOrCreate(
-        ['template_id' => $templateId, 'user_id' => $userId],
-        ['data' => $data]
-    );
+    // Fetch or create TemplateContent
+    $template = TemplateContent::where('template_id', $request->template_id)
+        ->where('user_id', $request->user_id)
+        ->first();
 
-    return response()->json([
-        'message' => 'Content saved successfully',
-        'content' => $templateContent,
-    ]);
+    if (!$template) {
+        $template = new TemplateContent();
+        $template->template_id = $request->template_id;
+        $template->user_id = $request->user_id;
+    }
+
+    $template->data = [
+        'navbar' => json_decode($request->navbar, true),
+        'hero' => [
+            'title' => $request->hero_title,
+            'subtitle' => $request->hero_subtitle,
+            'backgroundImage' => $heroImagePath ? Storage::url($heroImagePath) : ($template->data['hero']['backgroundImage'] ?? null),
+        ],
+        'mainContent' => [
+            'heading' => $request->main_heading,
+            'content' => $request->main_content,
+        ],
+        'footer' => [
+            'text' => $request->footer_text,
+        ],
+    ];
+
+    $template->save();
+
+    return response()->json(['message' => 'Template and thumbnail updated.']);
 }
 
 public function getByUserId(Request $request)

@@ -31,6 +31,7 @@ public function store(Request $request): JsonResponse
         'design' => 'nullable|string',
         'user_id' => 'required|integer',
         'template_id' => 'required|integer',
+        'thumbnail' => 'nullable|image|max:2048',
     ]);
 
     $template = CreateTemplate::create($data);
