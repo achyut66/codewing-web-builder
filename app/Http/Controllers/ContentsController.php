@@ -25,37 +25,32 @@ public function updatePage(Request $request)
     if ($request->hasFile('hero_image')) {
         $heroImagePath = $request->file('hero_image')->store('template_images', 'public');
 
-        // Create thumbnail
         $image = Image::make(storage_path('app/public/' . $heroImagePath))->fit(300, 200);
         $thumbnailName = 'thumb_' . basename($heroImagePath);
         $thumbnailPath = 'template_thumbnails/' . $thumbnailName;
 
         Storage::disk('public')->put($thumbnailPath, (string) $image->encode());
         $publicThumbnailUrl = Storage::url($thumbnailPath);
-        // Update or insert thumbnail into CreateTemplate
+
         CreateTemplate::updateOrCreate(
-            ['template_id' => $request->template_id],
+            ['id' => $request->template_id],
             ['thumbnail' => $publicThumbnailUrl]
         );
     }
 
-    // Fetch or create TemplateContent
-    $template = TemplateContent::where('template_id', $request->template_id)
-        ->where('user_id', $request->user_id)
-        ->first();
-
-    if (!$template) {
-        $template = new TemplateContent();
-        $template->template_id = $request->template_id;
-        $template->user_id = $request->user_id;
-    }
+    $template = TemplateContent::firstOrNew([
+        'template_id' => $request->template_id,
+        'user_id' => $request->user_id,
+    ]);
 
     $template->data = [
         'navbar' => json_decode($request->navbar, true),
         'hero' => [
             'title' => $request->hero_title,
             'subtitle' => $request->hero_subtitle,
-            'backgroundImage' => $heroImagePath ? Storage::url($heroImagePath) : ($template->data['hero']['backgroundImage'] ?? null),
+            'backgroundImage' => $heroImagePath
+                ? Storage::url($heroImagePath)
+                : data_get($template->data, 'hero.backgroundImage'),
         ],
         'mainContent' => [
             'heading' => $request->main_heading,
@@ -70,6 +65,7 @@ public function updatePage(Request $request)
 
     return response()->json(['message' => 'Template and thumbnail updated.']);
 }
+
 
 public function getByUserId(Request $request)
 {

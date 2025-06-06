@@ -42,8 +42,10 @@ onMounted(() => {
 
 
 const isModalOpen = ref(false);
-// const openModal = () => (isModalOpen.value = true);
 const closeModal = () => (isModalOpen.value = false);
+
+const isViewModalOpen = ref(false);
+const closeViewModal = () => (isViewModalOpen.value = false);
 
 const form = ref({
   title: '',
@@ -75,6 +77,18 @@ const openModal = async () => {
     console.error('Error fetching templates:', error);
   }
 };
+
+// Open the view modal
+const selectedTemplate = ref(null);
+
+const openViewModal = (templateId) => {
+  const template = userIdData.value.find(t => t.id === templateId);
+  if (template) {
+    selectedTemplate.value = template;
+    isViewModalOpen.value = true;
+  }
+};
+
 
 const submitForm = async () => {
   try {
@@ -139,6 +153,15 @@ const submitForm = async () => {
           <!-- Template Cards -->
           <!-- Template Cards -->
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div 
+            v-if="userIdData.length === 0" 
+            class="col-span-1 sm:col-span-2 lg:col-span-3 text-center p-4 bg-white shadow rounded-lg"
+          >
+            <p class="text-gray-500">
+              No templates found. Click "Create" to add a new template.
+            </p>
+          </div>
+
             <template v-for="template in userIdData" :key="template.id">
               <div class="bg-white p-4 shadow rounded-lg group relative transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl">
                 <img
@@ -162,21 +185,22 @@ const submitForm = async () => {
                 <div
                   class="absolute bottom-4 right-4 space-x-2 opacity-0 group-hover:opacity-100 transition-opacity"
                 >
-                  <Link
-                    :href="`/sites/${template.id}`"
-                    class="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+                  <Button
+                  @click="openViewModal(template.id)"
+                  class="px-3 py-2 text-sm bg-gray-700 text-gray-900 rounded hover:bg-gray-300"
                   >
                     View
-                  </Link>
+                  </Button>
                   <Link
                     :href="`/get-templates/${template.id}`"
-                    class="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
+                    class="px-3 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
                   >
                     Edit
                   </Link>
                 </div>
               </div>
             </template>
+
           </div>
 
         </section>
@@ -245,6 +269,29 @@ const submitForm = async () => {
           </div>
         </div>
       </Modal>
+
+      <!-- view modal -->
+       <Modal :show="isViewModalOpen" @close="closeViewModal">
+  <template #default>
+    <div v-if="selectedTemplate">
+      <h2 class="text-lg font-bold mb-2">{{ selectedTemplate.title }}</h2>
+      <p class="text-sm text-gray-600 mb-4">{{ selectedTemplate.description }}</p>
+      <img
+        v-if="selectedTemplate.thumbnail"
+        :src="selectedTemplate.thumbnail"
+        alt="Thumbnail"
+        class="w-full h-48 object-cover rounded"
+      />
+      <p class="text-sm text-gray-500 mt-4">
+        Domain: {{ selectedTemplate.domain || 'N/A' }}
+      </p>
+    </div>
+    <div v-else>
+      <p class="text-gray-500">No template selected.</p>
+    </div>
+  </template>
+</Modal>
+
     </div>
   </div>
   </Layout>
