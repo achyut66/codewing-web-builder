@@ -1,6 +1,77 @@
 <script setup>
-import { ref } from 'vue'
+import { ref,onMounted  } from 'vue'
 import axios from 'axios'
+import { usePage } from '@inertiajs/vue3'
+
+const { props } = usePage();
+const user = props.auth.user;
+
+const userId = ref(user.id || null);
+const templateId = window.location.pathname.split('/').pop()
+const datastodisplay = ref([]);
+
+const populateFieldsFromData = (data) => {
+  if (!data) return;
+
+  if (data.navbar && Array.isArray(data.navbar)) {
+    navbarItems.value = data.navbar;
+  }
+
+  if (data.hero) {
+    heroTitle.value = data.hero.title || '';
+    heroSubtitle.value = data.hero.subtitle || '';
+    heroBackgroundImage.value = data.hero.backgroundImage || '';
+  }
+
+  if (data.mainContent) {
+    mainHeading.value = data.mainContent.heading || '';
+    mainContent.value = data.mainContent.content || '';
+  }
+
+  if (data.footer) {
+    footerText.value = data.footer.text || '';
+  }
+};
+
+const fetchDisplayData = async () => {
+  try {
+    if (!userId.value || !templateId) {
+      console.warn('userId and templateId are required');
+      return;
+    }
+    const url =
+      route('api.templates.get-by-user') +
+      `?user_id=${encodeURIComponent(userId.value)}&template_id=${encodeURIComponent(templateId)}`;
+
+    const response = await fetch(url, {
+      headers: {
+        Accept: 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    datastodisplay.value = data.templates || [];
+
+    datastodisplay.value = data.templates || [];
+    if (datastodisplay.value.length > 0) {
+  populateFieldsFromData(datastodisplay.value[0].data);
+}
+
+    // console.log('Data to display:', datastodisplay.value);
+  } catch (error) {
+    console.error('Error fetching display data:', error);
+  }
+};
+
+onMounted(() => {
+  fetchDisplayData();
+});
+
 
 // Navbar menu
 const navbarItems = ref([
@@ -10,6 +81,7 @@ const navbarItems = ref([
 ])
 
 // Hero section
+
 const heroTitle = ref('Hi, I am John Doe')
 const heroSubtitle = ref('A passionate web developer')
 const heroBackgroundImage = ref('https://images.unsplash.com/photo-1507525428034-b723cf961d3e')
@@ -46,6 +118,8 @@ async function saveAll() {
 
   try {
     const payload = {
+      template_id: templateId,  // <-- send this so backend knows which template to update
+      user_id: user.id, // Assuming you have user ID available
       navbar: navbarItems.value,
       hero: {
         title: heroTitle.value,
@@ -61,15 +135,18 @@ async function saveAll() {
       },
     }
 
-    // Replace with your API
-    await axios.post('/api/websites/1/update-page', payload)
+    await axios.post('/api/templates/update-page', payload)
     message.value = 'Content saved successfully!'
+    window.location.href = '/dashboard';
+
   } catch (e) {
     error.value = 'Failed to save content.'
   } finally {
     loading.value = false
   }
 }
+
+
 </script>
 <template>
   <div class="min-h-screen p-6 bg-gray-100 flex flex-col gap-6">
@@ -80,7 +157,7 @@ async function saveAll() {
   <!-- Dropdown Header -->
   <div
     @click="showNavbarEditor = !showNavbarEditor"
-    class="cursor-pointer bg-indigo-100 px-24 py-2 font-semibold text-indigo-800 flex justify-between items-center"
+    class="cursor-pointer bg-indigo-100 px-24 py-2 font-semibold text-indigo-800 flex"
   >
      Navbar Menu
     <span>
@@ -141,14 +218,12 @@ async function saveAll() {
     </button>
   </div>
         </div>
-
-
         <!-- Hero Section -->
         <div class="mb-6 border rounded shadow">
   <!-- Dropdown Header -->
   <div
     @click="showHeroEditor = !showHeroEditor"
-    class="cursor-pointer bg-indigo-100 px-4 py-2 font-semibold text-indigo-800 flex justify-between items-center"
+    class="cursor-pointer bg-indigo-100 px-4 py-2 font-semibold text-indigo-800 flex justify-between"
   >
     Edit Hero Section
     <span>
@@ -174,7 +249,6 @@ async function saveAll() {
       </svg>
     </span>
   </div>
-
   <!-- Dropdown Content -->
   <div v-if="showHeroEditor" class="px-4 py-4">
     <label class="block mb-1 font-medium">Title</label>
@@ -184,7 +258,6 @@ async function saveAll() {
       class="w-full mb-2 border rounded px-3 py-1"
       placeholder="Hero title"
     />
-
     <label class="block mb-1 font-medium">Subtitle</label>
     <input
       v-model="heroSubtitle"
@@ -202,8 +275,6 @@ async function saveAll() {
     />
   </div>
         </div>
-
-
         <!-- Main Content Section -->
         <div class="mb-6 border rounded shadow">
   <!-- Dropdown Header -->
@@ -359,6 +430,3 @@ async function saveAll() {
   </div>
 </template>
 
-<style scoped>
-/* Optional: add scrollbar for long content */
-</style>

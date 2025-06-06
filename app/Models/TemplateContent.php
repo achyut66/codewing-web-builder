@@ -5,17 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CreateTemplate extends Model
+class TemplateContent extends Model
 {
     use HasFactory;
-    protected $table = 'user_templates';
+    protected $table = 'template_contents';
     protected $fillable = [
-        'title',
-        'description',
-        'domain',
-        'design',
         'user_id',
         'template_id',
+        'data',
     ];
 
+    protected $casts = [
+        'data' => 'array', // Automatically decode JSON to array
+    ];
 }

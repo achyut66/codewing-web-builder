@@ -1,10 +1,46 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link, usePage,router } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref,onMounted } from 'vue';
 import Button from '@/Components/PrimaryButton.vue';
 import Modal from '@/Components/TemplateModal.vue';
 import Layout from '@/Layouts/Layouts.vue';
+import { useForm } from '@inertiajs/vue3';
+
+
+const { props } = usePage();
+const user = props.auth.user;
+const userId = ref(user.id || null);
+
+// fetch from only user_id
+const userIdData = ref([]);
+console.log('userId:', userIdData.value); // Check the user ID
+const fetchUserId = async () => {
+  try {
+    const url = route('api.templates.get-by-user-id') + `?user_id=${encodeURIComponent(userId.value)}`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+      },
+    });
+
+    if (!response.ok) throw new Error('Failed to fetch user data');
+    const data = await response.json();
+    userIdData.value = data.templates;  // <-- here is the array only
+  } catch (error) {
+    console.error('Error fetching user ID:', error);
+  }
+};
+
+onMounted(() => {
+  fetchUserId();
+});
+
+
+
 
 const isModalOpen = ref(false);
 // const openModal = () => (isModalOpen.value = true);
@@ -15,6 +51,7 @@ const form = ref({
   description: '',
   domain: '',
   design: 'new',
+  user_id: userId.value, // Use the fetched user ID
   template_id: '',
 });
 
@@ -70,6 +107,7 @@ const submitForm = async () => {
       description: '',
       domain: '',
       design: '',
+      user_id: userId.value, // Reset to the fetched user ID
       template_id: '',
     };
 
@@ -87,36 +125,10 @@ const submitForm = async () => {
   <Head title="Dashboard" />
 
   <div class="min-h-screen flex bg-gray-100">
-    <!-- Sidebar -->
-    <!-- <aside class="w-64 bg-gray-300 shadow-md hidden md:block">
-      <div class="p-6">
-        <img src="/build/images/logo.png" alt="Logo" class="h-30 mb-6" />
-        <nav class="space-y-4 ml-12">
-          <Link href="/dashboard" class="block text-gray-700 font-medium hover:text-blue-600">My Sites</Link>
-          <Link href="/templates" class="block text-gray-700 font-medium hover:text-blue-600">Templates</Link>
-          <Link href="/settings" class="block text-gray-700 font-medium hover:text-blue-600">Settings</Link>
-        </nav>
-      </div>
-    </aside> -->
-    
+   
     <!-- Main Content -->
     <div class="flex-1 flex flex-col">
-      <!-- Topbar -->
-      <!-- <header class="bg-white shadow-sm p-4 flex items-center justify-between">
-        <h1 class="text-xl font-semibold text-gray-800">Codewing Website Builder</h1>
-        <div class="flex items-center space-x-4">
-          <span class="text-gray-600 text-sm">Welcome, {{ user.name }}</span>
-          <Link
-            href="/logout"
-            method="post"
-            as="button"
-            class="text-sm text-red-600 hover:underline"
-          >
-            Logout
-          </Link>
-        </div>
-      </header> -->
-
+   
       <!-- Content Area -->
       <main class="p-6 space-y-6">
         <section>
@@ -126,31 +138,36 @@ const submitForm = async () => {
           </div>
 
           <!-- Template Cards -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <template v-for="i in 4" :key="i">
-              <div class="bg-white p-4 shadow rounded-lg group relative transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl">
-                <h3 class="text-md font-semibold text-gray-800">My First Site</h3>
-                <p class="text-sm text-gray-500 mt-1">Last updated: June 4, 2025</p>
+          <!-- Template Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+  <template v-for="template in userIdData" :key="template.id">
+    <div class="bg-white p-4 shadow rounded-lg group relative transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl">
+      <h3 class="text-md font-semibold text-gray-800">{{ template.title }}</h3>
+      <p class="text-sm text-gray-500 mt-1">{{ template.description }}</p>
+      <p class="text-xs text-gray-400 mt-1">
+        Last updated: {{ new Date(template.updated_at || template.created_at).toLocaleDateString() }}
+      </p>
 
-                <div
-                  class="absolute bottom-4 right-4 space-x-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                >
-                  <Link
-                    :href="`/sites/${i}`"
-                    class="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
-                  >
-                    View
-                  </Link>
-                  <Link
-                    :href="`/sites/${i}/edit`"
-                    class="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
-                  >
-                    Edit
-                  </Link>
-                </div>
-              </div>
-            </template>
-          </div>
+      <div
+        class="absolute bottom-4 right-4 space-x-2 opacity-0 group-hover:opacity-100 transition-opacity"
+      >
+        <Link
+          :href="`/sites/${template.id}`"
+          class="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+        >
+          View
+        </Link>
+        <Link
+          :href="`/sites/${template.id}/edit`"
+          class="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          Edit
+        </Link>
+      </div>
+    </div>
+  </template>
+</div>
+
         </section>
       </main>
 
@@ -196,8 +213,8 @@ const submitForm = async () => {
             >
               <option disabled value="">Select a design</option>
               <option v-for="template in templates" :key="template.template_id" :value="template.template_id">
-    {{ template.template_name }}
-  </option>
+        {{ template.template_name }}
+      </option>
             </select>
           </div>
 

@@ -29,6 +29,7 @@ public function store(Request $request): JsonResponse
         'description' => 'required|string',
         'domain' => 'required|string',
         'design' => 'nullable|string',
+        'user_id' => 'required|integer',
         'template_id' => 'required|integer',
     ]);
 
@@ -57,4 +58,21 @@ public function get_template_by_id($id)
         'template' => $matchedTemplate,
     ]);
 }
+public function get_template_by_user_id(Request $request)
+{
+    $userId = $request->input('user_id');
+    if (!$userId) {
+        return response()->json(['error' => 'User ID is required'], 400);
+    }
+    $templates = CreateTemplate::where('user_id', $userId)->get();
+    if ($templates->isEmpty()) {
+        return response()->json(['message' => 'No templates found for this user'], 404);
+    }
+    return response()->json([
+        'user_id' => $userId,
+        'templates' => $templates,
+    ]);
+}
+
+
 }
