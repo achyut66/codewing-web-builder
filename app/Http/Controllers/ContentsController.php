@@ -56,6 +56,14 @@ public function updatePage(Request $request)
             'heading' => $request->main_heading,
             'content' => $request->main_content,
         ],
+        'contactContent' => [
+            'heading' => $request->contact_heading,
+            'content' => $request->contact_content,
+        ],
+        'portfolioContent' => [
+            'heading' => $request->portfolio_heading,
+            'content' => $request->portfolio_content,
+        ],
         'footer' => [
             'text' => $request->footer_text,
         ],

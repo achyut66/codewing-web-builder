@@ -28,6 +28,17 @@ const populateFieldsFromData = (data) => {
     mainContent.value = data.mainContent.content || '';
   }
 
+  if (data.contactContent) {
+    contactHeading.value = data.contactContent.heading || '';
+    contactContent.value = data.contactContent.content || '';
+  }
+
+  if (data.portfolioContent) {
+    portfolioHeading.value = data.portfolioContent.heading || '';
+    portfolioContent.value = data.portfolioContent.content || '';
+  }
+
+
   if (data.footer) {
     footerText.value = data.footer.text || '';
   }
@@ -78,17 +89,25 @@ const navbarItems = ref([
   { name: 'Home', href: '/' },
   { name: 'About', href: '/about' },
   { name: 'Contact', href: '/contact' },
+  { name: 'Portfolio', href: '/portfolio' },
 ])
 
 // Hero section
-
 const heroTitle = ref('Hi, I am John Doe')
 const heroSubtitle = ref('A passionate web developer')
 const heroBackgroundImage = ref('https://images.unsplash.com/photo-1507525428034-b723cf961d3e')
 
-// Main content
-const mainHeading = ref('Welcome to My Website')
-const mainContent = ref('This is the main content area. You can add anything you want here.')
+// about content
+const mainHeading = ref('About Me')
+const mainContent = ref('This is Mr. Achyut Neupane a full stack developer (Laravel,React,Vue,Mysql,MongoDB) has been an experience of 4 years now in the similar feilds. And I am currently working as a full stack developer at Codewing Solutions. I have worked on various projects and have a good understanding of web development. I am always eager to learn new technologies and improve my skills.');
+
+// contact section
+const contactHeading = ref('Contact Me')
+const contactContent = ref('Email:green.band66@gmail.com:\nPhone: 9861023479\nLinkedIn: https://www.linkedin.com/in/achyut-neupane-123456789/');
+
+// portfolio section
+const portfolioHeading = ref('My Portfolio')
+const portfolioContent = ref('Here are some of my projects:\n1. Project 1\n2. Project 2\n3. Project 3');
 
 // Footer
 const footerText = ref('© 2025 John Doe. All rights reserved.')
@@ -97,10 +116,11 @@ const footerText = ref('© 2025 John Doe. All rights reserved.')
 const message = ref('')
 const error = ref('')
 const loading = ref(false)
-
 const showNavbarEditor = ref(false)
 const showHeroEditor = ref(false)
 const showMainEditor = ref(false)
+const showContactEditor = ref(false)
+const showPortfolioEditor = ref(false)
 const showFooterEditor = ref(false)
 
 function addMenuItem() {
@@ -114,6 +134,7 @@ function removeMenuItem(index) {
 // image file save 
 const heroImageFile = ref(null);
 const selectedHeroImageFile = ref(null);
+
 function onHeroImageChange(event) {
   heroImageFile.value = event.target.files[0];
   const file = event.target.files[0];
@@ -137,7 +158,11 @@ async function saveAll() {
     formData.append('hero_title', heroTitle.value);
     formData.append('hero_subtitle', heroSubtitle.value);
     formData.append('main_heading', mainHeading.value);
+    formData.append('contact_heading', contactHeading.value);
+    formData.append('portfolio_heading', portfolioHeading.value);
     formData.append('main_content', mainContent.value);
+    formData.append('contact_content', contactContent.value);
+    formData.append('portfolio_content', portfolioContent.value);
     formData.append('footer_text', footerText.value);
 
     if (heroImageFile.value) {
@@ -159,9 +184,6 @@ async function saveAll() {
   }
 }
 
-
-
-
 </script>
 <template>
   <div class="min-h-screen p-6 bg-gray-100 flex flex-col gap-6">
@@ -172,7 +194,7 @@ async function saveAll() {
   <!-- Dropdown Header -->
   <div
     @click="showNavbarEditor = !showNavbarEditor"
-    class="cursor-pointer bg-indigo-100 px-24 py-2 font-semibold text-indigo-800 flex"
+    class="cursor-pointer bg-indigo-100 px-4 py-2 font-semibold text-indigo-800 flex justify-between"
   >
      Navbar Menu
     <span>
@@ -204,7 +226,7 @@ async function saveAll() {
     <div
       v-for="(item, index) in navbarItems"
       :key="index"
-      class="flex gap-1 mb-3 items-center"
+      class="flex gap-1 mb-3"
     >
       <input
         v-model="item.name"
@@ -240,7 +262,7 @@ async function saveAll() {
     @click="showHeroEditor = !showHeroEditor"
     class="cursor-pointer bg-indigo-100 px-4 py-2 font-semibold text-indigo-800 flex justify-between"
   >
-    Edit Hero Section
+    Hero Section
     <span>
       <svg
         v-if="!showHeroEditor"
@@ -290,13 +312,13 @@ async function saveAll() {
   </div>
 </div>
         <!-- Main Content Section -->
-        <div class="mb-6 border rounded shadow">
+<div class="mb-6 border rounded shadow">
   <!-- Dropdown Header -->
   <div
     @click="showMainEditor = !showMainEditor"
     class="cursor-pointer bg-indigo-100 px-4 py-2 font-semibold text-indigo-800 flex justify-between items-center"
   >
-    Edit Main Content
+    About Section
     <span>
       <svg
         v-if="!showMainEditor"
@@ -320,7 +342,6 @@ async function saveAll() {
       </svg>
     </span>
   </div>
-
   <!-- Dropdown Content -->
   <div v-if="showMainEditor" class="px-4 py-4">
     <label class="block mb-1 font-medium">Heading</label>
@@ -339,9 +360,110 @@ async function saveAll() {
       placeholder="Write main content..."
     />
   </div>
-        </div>
+</div>
+<!-- contact section -->
+ <div class="mb-6 border rounded shadow">
+  <!-- Dropdown Header -->
+  <div
+    @click="showContactEditor = !showContactEditor"
+    class="cursor-pointer bg-indigo-100 px-4 py-2 font-semibold text-indigo-800 flex justify-between items-center"
+  >
+    Contact Section
+    <span>
+      <svg
+        v-if="!showContactEditor"
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+      </svg>
+      <svg
+        v-else
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+      </svg>
+    </span>
+  </div>
+  <!-- Dropdown Content -->
+  <div v-if="showContactEditor" class="px-4 py-4">
+    <label class="block mb-1 font-medium">Heading</label>
+    <input
+      v-model="contactHeading"
+      type="text"
+      class="w-full mb-2 border rounded px-3 py-1"
+      placeholder="Main heading"
+    />
 
+    <label class="block mb-1 font-medium">Content</label>
+    <textarea
+      v-model="contactContent"
+      rows="4"
+      class="w-full border rounded px-3 py-2"
+      placeholder="Write main content..."
+    />
+  </div>
+</div>
+<!-- contact section ends here -->
 
+<!-- portfolio section -->
+ <div class="mb-6 border rounded shadow">
+  <!-- Dropdown Header -->
+  <div
+    @click="showPortfolioEditor = !showPortfolioEditor"
+    class="cursor-pointer bg-indigo-100 px-4 py-2 font-semibold text-indigo-800 flex justify-between items-center"
+  >
+    Portfolio Section
+    <span>
+      <svg
+        v-if="!showPortfolioEditor"
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+      </svg>
+      <svg
+        v-else
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+      </svg>
+    </span>
+  </div>
+  <!-- Dropdown Content -->
+  <div v-if="showPortfolioEditor" class="px-4 py-4">
+    <label class="block mb-1 font-medium">Heading</label>
+    <input
+      v-model="portfolioHeading"
+      type="text"
+      class="w-full mb-2 border rounded px-3 py-1"
+      placeholder="Main heading"
+    />
+
+    <label class="block mb-1 font-medium">Content</label>
+    <textarea
+      v-model="portfolioContent"
+      rows="4"
+      class="w-full border rounded px-3 py-2"
+      placeholder="Write main content..."
+    />
+  </div>
+</div>
+<!-- portfolio section ends here -->
         <!-- Footer -->
         <div class="mb-6 border rounded shadow">
   <!-- Toggle Header -->
@@ -349,7 +471,7 @@ async function saveAll() {
     @click="showFooterEditor = !showFooterEditor"
     class="cursor-pointer bg-indigo-100 px-4 py-2 font-semibold text-indigo-800 flex justify-between items-center"
   >
-    Edit Footer
+    Footer
     <span>
       <svg
         v-if="!showFooterEditor"
@@ -427,12 +549,27 @@ async function saveAll() {
           <p class="mt-4 text-xl drop-shadow-md">{{ heroSubtitle }}</p>
         </section>
 
-        <!-- Main Content Section -->
-        <section class="p-8">
-          <h2 class="text-3xl font-bold mb-4">{{ mainHeading }}</h2>
+        <!-- About Section -->
+        <section class="p-8 bg-gray-200">
+          <h2 class="text-2xl font-bold mb-4 text-center">{{ mainHeading }}</h2>
           <p class="text-gray-700 leading-relaxed whitespace-pre-line">
             {{ mainContent }}
           </p>
+        </section>
+        <!-- Contact section -->
+         <section class="p-8 bg-gray-100">
+          <h2 class="text-3xl font-bold mb-4 text-center">{{ contactHeading }}</h2>
+          <p class="text-gray-700 leading-relaxed whitespace-pre-line text-center">
+            {{ contactContent }}
+          </p>
+        </section>
+        <!-- portfolio section -->
+         <section class="p-8 bg-gray-200">
+          <h2 class="text-3xl font-bold mb-4 text-center">{{ portfolioHeading }}</h2>
+          <p class="text-gray-700 leading-relaxed whitespace-pre-line text-center">
+            {{ portfolioContent }}
+          </p>
+          
         </section>
 
         <!-- Footer -->

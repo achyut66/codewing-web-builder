@@ -1,8 +1,8 @@
 [
   {
     "template_id": 1,
-    "template_name": "Ecommerce Landing Page",
-    "description": "A modern startup landing page",
+    "template_name": "Portfolio Template",
+    "description": "A sleek portfolio template for creatives",
     "sections": [
       {
         "type": "hero",
@@ -18,27 +18,6 @@
         "props": {
           "title": "About Our Company",
           "content": "We build awesome websites."
-        }
-      }
-    ]
-  },
-  {
-    "template_id": 2,
-    "template_name": "Portfolio",
-    "description": "Showcase your work beautifully",
-    "sections": [
-      {
-        "type": "hero",
-        "props": {
-          "headline": "Welcome to my portfolio",
-          "buttonText": "View Projects"
-        }
-      },
-      {
-        "type": "contact",
-        "props": {
-          "heading": "Get In Touch",
-          "email": "hello@portfolio.com"
         }
       }
     ]

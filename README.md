@@ -19,7 +19,6 @@ Tailwind CSS
 ## 📦 Requirements
 
 Before you begin, make sure you have the following installed:
-
 PHP >= 8.1
 Composer
 Node.js & npm
