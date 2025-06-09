@@ -98,14 +98,34 @@ public function getByUserId(Request $request)
 public function fetchTemplatesOnlyByUserId(Request $request)
 {
     $userId = $request->input('user_id');
+    
     if (!$userId) {
         return response()->json(['error' => 'User ID is required'], 400);
     }
-    $templates = TemplateContent::where('user_id', $userId)->get();
+
+    if ($userId == 1) {
+        $templates = TemplateContent::all();
+    } else {
+        $templates = TemplateContent::where('user_id', $userId)->get();
+    }
     return response()->json([
         'user_id' => $userId,
         'templates' => $templates,
     ]);
-
 }
+
+// public function getTemplatesByUserIdAndFlag(Request $request)
+// {
+//     // $userId = $request->input('user_id');
+//     $flag = 1;
+//     if (!isset($flag)) {
+//         return response()->json(['error' => 'Both user_id and flag are required'], 400);
+//     }
+//     $templates = TemplateContent::where('flag', $flag)
+//                                 ->get();
+//     return response()->json([
+//         'flag' => $flag,
+//         'templates' => $templates,
+//     ]);
+// }
 }

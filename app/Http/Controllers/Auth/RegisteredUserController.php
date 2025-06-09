@@ -49,4 +49,22 @@ class RegisteredUserController extends Controller
 
         return redirect(RouteServiceProvider::HOME);
     }
+    
+    public function get_user_by_userid_and_flag(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'flag' => 'required|boolean',
+        ]);
+
+        $user = User::where('id', $request->user_id)
+            ->where('flag', $request->flag)
+            ->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found or flag does not match'], 404);
+        }
+
+        return response()->json($user);
+    }
 }

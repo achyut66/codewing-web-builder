@@ -65,7 +65,11 @@ public function get_template_by_user_id(Request $request)
     if (!$userId) {
         return response()->json(['error' => 'User ID is required'], 400);
     }
-    $templates = CreateTemplate::where('user_id', $userId)->get();
+    if ($userId == 1) {
+            $templates = CreateTemplate::all();
+        } else {
+            $templates = CreateTemplate::where('user_id', $userId)->get();
+        }
     if ($templates->isEmpty()) {
         return response()->json(['message' => 'No templates found for this user'], 404);
     }

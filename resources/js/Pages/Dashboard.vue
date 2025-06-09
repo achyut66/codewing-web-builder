@@ -11,9 +11,11 @@ import { useForm } from '@inertiajs/vue3';
 const { props } = usePage();
 const user = props.auth.user;
 const userId = ref(user.id || null);
-
+const flag = ref(user.flag || null);
+// console.log(userId.value);
 // fetch from only user_id
 const userIdData = ref([]);
+// console.log(userIdData);
 const fetchUserId = async () => {
   try {
     const url = route('api.templates.get-by-user-id') + `?user_id=${encodeURIComponent(userId.value)}`;
