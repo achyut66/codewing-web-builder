@@ -6,6 +6,7 @@ import Button from '@/Components/PrimaryButton.vue';
 import Modal from '@/Components/TemplateModal.vue';
 import Layout from '@/Layouts/Layouts.vue';
 import { useForm } from '@inertiajs/vue3';
+import { useToast } from "vue-toastification";
 
 
 const { props } = usePage();
@@ -39,9 +40,6 @@ const fetchUserId = async () => {
 onMounted(() => {
   fetchUserId();
 });
-
-
-
 
 const isModalOpen = ref(false);
 const closeModal = () => (isModalOpen.value = false);
@@ -133,12 +131,12 @@ const submitForm = async () => {
   }
 };
 
+const toast = useToast();
 </script>
 
 <template>
   <Layout>
   <Head title="Dashboard" />
-
   <div class="min-h-screen flex bg-gray-100">
    
     <!-- Main Content -->
@@ -270,6 +268,7 @@ const submitForm = async () => {
             </button>
           </div>
         </div>
+        
       </Modal>
 
       <!-- view modal -->

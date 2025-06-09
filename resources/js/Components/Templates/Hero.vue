@@ -2,6 +2,9 @@
 import { ref,onMounted  } from 'vue'
 import axios from 'axios'
 import { usePage } from '@inertiajs/vue3'
+// import { useToast } from "vue-toastification";
+
+// const toast = useToast();
 
 const { props } = usePage();
 const user = props.auth.user;
@@ -174,8 +177,9 @@ async function saveAll() {
         'Content-Type': 'multipart/form-data',
       },
     });
-
     message.value = 'Content saved successfully!';
+    //  toast.success(response.data.message || 'Content saved successfully!');
+    // Inertia.visit('/dashboard');
     window.location.href = '/dashboard';
   } catch (e) {
     error.value = 'Failed to save content.';

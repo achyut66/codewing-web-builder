@@ -70,8 +70,7 @@ public function updatePage(Request $request)
     ];
 
     $template->save();
-
-    return response()->json(['message' => 'Template and thumbnail updated.']);
+    return response()->json(['message' => 'Content saved successfully!']);
 }
 
 

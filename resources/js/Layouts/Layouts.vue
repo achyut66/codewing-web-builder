@@ -1,5 +1,27 @@
 <script setup>
 import { usePage, Link } from '@inertiajs/vue3';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+
+const open = ref(false)
+const dropdownRef = ref(null)
+
+function toggleDropdown() {
+  open.value = !open.value
+}
+
+function handleClickOutside(event) {
+  if (dropdownRef.value && !dropdownRef.value.contains(event.target)) {
+    open.value = false
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
 
 const user = usePage().props.auth.user;
 </script>
@@ -13,7 +35,52 @@ const user = usePage().props.auth.user;
       <nav class="space-y-4 ml-6">
         <Link href="/dashboard" class="block text-gray-700 font-medium hover:text-blue-600">My Sites</Link>
         <Link href="/view-templates" class="block text-gray-700 font-medium hover:text-blue-600">Templates</Link>
-        <Link href="/settings" class="block text-gray-700 font-medium hover:text-blue-600">Settings</Link>
+        <div class="relative" ref="dropdownRef">
+  <button @click="toggleDropdown"
+        class="flex items-center justify-between w-full text-gray-700 font-medium hover:text-blue-600 focus:outline-none">
+  <span>Settings</span>
+  <svg :class="['w-4 h-4 transition-transform duration-200', open ? 'rotate-180' : 'rotate-0']"
+       fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+  </svg>
+</button>
+
+
+  <div class="relative" ref="dropdownRef">
+  <!-- Button above goes here -->
+
+  <div v-if="open"
+       class="absolute mt-2 w-46 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+    <ul class="py-1">
+      <li>
+        <Link href="/settings/site-title"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+          Site Title
+        </Link>
+      </li>
+      <li>
+        <Link href="/settings/tagline"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+          Tagline & Description
+        </Link>
+      </li>
+      <li>
+        <Link href="/settings/language"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+          Site Language
+        </Link>
+      </li>
+      <li>
+        <Link href="/settings/timezone"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+          Timezone
+        </Link>
+      </li>
+    </ul>
+  </div>
+</div>
+
+        </div>
       </nav>
     </div>
   </aside>

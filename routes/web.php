@@ -4,6 +4,7 @@ use App\Http\Controllers\CreateTemplatesController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SettingsSiteTitleModelController;
 use Inertia\Inertia;
 
 /*
@@ -50,5 +51,15 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+// settings routes
+Route::get('settings/site-title', function () {
+    return Inertia::render('Settings/SiteTitle');
+})->name('settings.site-title');
+
+Route::get('/settings/site-title', [SettingsSiteTitleModelController::class, 'index'])->name('settings.site-title');
+Route::post('/settings/site-title', [SettingsSiteTitleModelController::class, 'store'])->name('settings.site-title.store');
+Route::delete('/settings/site-title/{setting}', [SettingsSiteTitleModelController::class, 'destroy'])->name('settings.site-title.destroy');
+Route::put('/settings/site-title/update/{setting}', [SettingsSiteTitleModelController::class, 'update'])->name('settings.site-title.update');
 
 require __DIR__.'/auth.php';
