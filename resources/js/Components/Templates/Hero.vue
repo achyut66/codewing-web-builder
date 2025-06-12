@@ -467,52 +467,49 @@ async function saveAll() {
     />
   </div>
 </div>
-<!-- portfolio section ends here -->
+        <!-- portfolio section ends here -->
         <!-- Footer -->
         <div class="mb-6 border rounded shadow">
-  <!-- Toggle Header -->
-  <div
-    @click="showFooterEditor = !showFooterEditor"
-    class="cursor-pointer bg-indigo-100 px-4 py-2 font-semibold text-indigo-800 flex justify-between items-center"
-  >
-    Footer
-    <span>
-      <svg
-        v-if="!showFooterEditor"
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-5 w-5"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-      </svg>
-      <svg
-        v-else
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-5 w-5"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
-      </svg>
-    </span>
-  </div>
-
-  <!-- Dropdown Content -->
-  <div v-if="showFooterEditor" class="px-4 py-4">
-    <label class="block mb-1 font-medium">Footer Text</label>
-    <input
-      v-model="footerText"
-      type="text"
-      class="w-full border rounded px-3 py-1"
-      placeholder="Footer content"
-    />
-  </div>
+        <!-- Toggle Header -->
+        <div
+          @click="showFooterEditor = !showFooterEditor"
+          class="cursor-pointer bg-indigo-100 px-4 py-2 font-semibold text-indigo-800 flex justify-between items-center"
+        >
+          Footer
+          <span>
+            <svg
+              v-if="!showFooterEditor"
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+            <svg
+              v-else
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+            </svg>
+          </span>
         </div>
-
-
+        <!-- Dropdown Content -->
+        <div v-if="showFooterEditor" class="px-4 py-4">
+          <label class="block mb-1 font-medium">Footer Text</label>
+          <input
+            v-model="footerText"
+            type="text"
+            class="w-full border rounded px-3 py-1"
+            placeholder="Footer content"
+          />
+        </div>
+        </div>
         <!-- Save Button -->
         <button
           @click="saveAll"
@@ -521,7 +518,6 @@ async function saveAll() {
         >
           {{ loading ? 'Saving...' : 'Save All' }}
         </button>
-
         <p v-if="message" class="mt-4 text-green-600">{{ message }}</p>
         <p v-if="error" class="mt-4 text-red-600">{{ error }}</p>
       </div>

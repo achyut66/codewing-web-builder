@@ -31,4 +31,5 @@ Route::post('/templates/update-page', [ContentsController::class, 'updatePage'])
 Route::get('/templates/get-by-user', [ContentsController::class, 'getByUserId'])->name('api.templates.get-by-user');
 Route::get('/templates/fetch-templates-only-by-user', [ContentsController::class, 'fetchTemplatesOnlyByUserId'])->name('api.templates.fetch-templates-only-by-user');
 
+Route::get('/templates/get-by-template-id/{id}', [ContentsController::class, 'getTemplateDetailsByTemplateId'])->name('api.templates.get-by-template-id');
 

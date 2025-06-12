@@ -1,12 +1,14 @@
 <script setup>
 import { ref, watch } from 'vue'
-import { useForm } from '@inertiajs/vue3'
+import { useForm,usePage } from '@inertiajs/vue3'
 import Layout from '@/Layouts/Layouts.vue'
 import Modal from '@/Components/TemplateModal.vue'
 
 const props = defineProps({
   settings: Array
 })
+
+const page = usePage()
 
 const isModalOpen = ref(false)
 
@@ -45,6 +47,9 @@ const submit = () => {
         form.reset()
         editingSetting.value = null
         closeModal()
+        page.props.flash = { success: 'Setting updated successfully.' }
+        // Reload page
+        location.reload()
       }
     })
   } else {
@@ -52,6 +57,9 @@ const submit = () => {
       onSuccess: () => {
         form.reset()
         closeModal()
+        page.props.flash = { success: 'Setting created successfully.' }
+        // Reload page
+        location.reload()
       }
     })
   }
@@ -80,6 +88,9 @@ const deleteTitle = (setting) => {
 
 <template>
   <Layout>
+    <div v-if="page.props.flash?.success" class="alert alert-success">
+    {{ page.props.flash.success }}
+  </div>
     <div class="max-w-7xl mx-auto mt-10">
       <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold">Site Settings</h1>

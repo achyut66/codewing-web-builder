@@ -113,6 +113,24 @@ public function fetchTemplatesOnlyByUserId(Request $request)
     ]);
 }
 
+public function getTemplateDetailsByTemplateId($id)
+{
+    if (!$id) {
+        return response()->json(['error' => 'Template ID is required'], 400);
+    }
+
+    $template = TemplateContent::where('template_id', $id)->first();
+
+    if (!$template) {
+        return response()->json(['message' => 'Template not found'], 404);
+    }
+
+    return response()->json([
+        'template_id' => $id,
+        'template' => $template,
+    ]);
+}
+
 // public function getTemplatesByUserIdAndFlag(Request $request)
 // {
 //     // $userId = $request->input('user_id');

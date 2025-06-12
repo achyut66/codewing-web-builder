@@ -1,15 +1,17 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link, usePage,router } from '@inertiajs/vue3';
-import { ref,onMounted } from 'vue';
+import { ref,onMounted,computed } from 'vue';
 import Button from '@/Components/PrimaryButton.vue';
-import Modal from '@/Components/TemplateModal.vue';
+import Modal from '@/Components/ViewTemplateModal.vue';
 import Layout from '@/Layouts/Layouts.vue';
 import { useForm } from '@inertiajs/vue3';
 import { useToast } from "vue-toastification";
 
 
+
 const { props } = usePage();
+
 const user = props.auth.user;
 const userId = ref(user.id || null);
 const flag = ref(user.flag || null);
@@ -82,12 +84,52 @@ const openModal = async () => {
 const selectedTemplate = ref(null);
 
 const openViewModal = (templateId) => {
-  const template = userIdData.value.find(t => t.id === templateId);
-  if (template) {
-    selectedTemplate.value = template;
-    isViewModalOpen.value = true;
-  }
+  const fetchTemplateData = async () => {
+    try {
+      const url = route('api.templates.get-by-template-id', { id: templateId });
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+        },
+      });
+
+      if (!response.ok) throw new Error('Failed to fetch template');
+      const data = await response.json();
+      selectedTemplate.value = data;
+      isViewModalOpen.value = true;
+      console.log('Selected template:', selectedTemplate.value);
+    } catch (error) {
+      console.error('Error fetching template:', error);
+    }
+  };
+  fetchTemplateData();
 };
+
+
+// data collection for view modal
+// console.log(selectedTemplate.value);
+const temId = computed(() => selectedTemplate.value?.template_id || '');
+const heroTitle = computed(() => selectedTemplate.value?.navbar?.data?.hero?.title || '');
+const heroSubtitle = computed(() => selectedTemplate.value?.template?.data?.hero?.subtitle || '');
+const heroBackgroundImage = computed(() => selectedTemplate.value?.template?.data?.hero?.backgroundImage || '');
+
+const navbarItems = computed(() => selectedTemplate.value?.template?.data?.navbar || []);
+
+const mainHeading = computed(() => selectedTemplate.value?.template?.data?.mainContent?.heading || '');
+const mainContent = computed(() => selectedTemplate.value?.template?.data?.mainContent?.content || '');
+
+const contactHeading = computed(() => selectedTemplate.value?.template?.data?.contactContent?.heading || '');
+const contactContent = computed(() => selectedTemplate.value?.template?.data?.contactContent?.content || '');
+
+const portfolioHeading = computed(() => selectedTemplate.value?.template?.data?.portfolioContent?.heading || '');
+const portfolioContent = computed(() => selectedTemplate.value?.template?.data?.portfolioContent?.content || '');
+
+const footerText = computed(() => selectedTemplate.value?.template?.data?.footer?.text || '');
+
+console.log(heroTitle.value);
 
 
 const submitForm = async () => {
@@ -131,7 +173,6 @@ const submitForm = async () => {
   }
 };
 
-const toast = useToast();
 </script>
 
 <template>
@@ -272,7 +313,7 @@ const toast = useToast();
       </Modal>
 
       <!-- view modal -->
-       <Modal :show="isViewModalOpen" @close="closeViewModal">
+       <!-- <Modal :show="isViewModalOpen" @close="closeViewModal">
   <template #default>
     <div v-if="selectedTemplate">
       <h2 class="text-lg font-bold mb-2">{{ selectedTemplate.title }}</h2>
@@ -291,7 +332,66 @@ const toast = useToast();
       <p class="text-gray-500">No template selected.</p>
     </div>
   </template>
-</Modal>
+       </Modal> -->
+       
+       <Modal :show="isViewModalOpen" width="800px" height="80vh" @close="closeViewModal">
+      <div class="text-right mb-[10px]">
+        <Link
+          :href="`/get-templates/${temId}`"
+          class="px-3 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
+        >Edit</Link>
+      </div>
+      <div class="col-span-12 md:col-span-12 rounded-lg shadow overflow-hidden bg-white">
+      <!-- Navbar -->
+        <nav class="bg-indigo-700 text-white flex px-6 py-4 gap-6">
+          <a v-for="(item, index) in navbarItems" :key="index" :href="item.href">
+            {{ item.name }}
+          </a>
+        </nav>
+        <!-- Hero Section -->
+        <section
+          class="p-20 text-center text-white"
+          :style="{
+            backgroundImage: 'url(' + heroBackgroundImage + ')',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }"
+        >
+        <h1 class="text-5xl font-bold drop-shadow-lg">{{ heroTitle }}</h1>
+          <p class="mt-4 text-xl drop-shadow-md">{{ heroSubtitle }}</p>
+          </section>  
+
+        <!-- About -->
+        <section class="p-8 bg-gray-200">
+          <h2 class="text-2xl font-bold mb-4 text-center">{{ mainHeading }}</h2>
+          <p class="text-gray-700 leading-relaxed whitespace-pre-line">
+            {{ mainContent }}
+          </p>
+        </section>
+
+        <!-- Contact -->
+        <section class="p-8 bg-gray-100">
+          <h2 class="text-3xl font-bold mb-4 text-center">{{ contactHeading }}</h2>
+          <p class="text-gray-700 leading-relaxed whitespace-pre-line text-center">
+            {{ contactContent }}
+          </p>
+        </section>
+
+        <!-- Portfolio -->
+        <section class="p-8 bg-gray-200">
+          <h2 class="text-3xl font-bold mb-4 text-center">{{ portfolioHeading }}</h2>
+          <p class="text-gray-700 leading-relaxed whitespace-pre-line text-center">
+            {{ portfolioContent }}
+          </p>
+          
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-gray-800 text-white text-center p-4">
+          {{ footerText }}
+        </footer>
+      </div>  
+      </Modal>
 
     </div>
   </div>
