@@ -33,7 +33,7 @@ onMounted(() => {
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16 items-center">
           <div class="flex items-center space-x-3">
-            <img src="/build/images/logo.png" alt="Logo" class="h-10 w-10" />
+            <img src="/assets/images/logo.png" alt="Logo" class="h-10 w-10" />
             <span class="text-xl font-bold text-blue-600">Codewing Website Builder</span>
           </div>
           <div class="hidden md:flex items-center space-x-6">

@@ -29,7 +29,7 @@ const submit = () => {
             <!-- Left Side: Logo + Welcome -->
             <div class="hidden lg:flex lg:w-1/2 bg-blue-600 text-white items-center justify-center p-10 radius-l-lg">
                 <div class="text-center space-y-6 max-w-md">
-                    <img src="/build/images/logo.png" alt="Logo" class="mx-auto h-20 w-20" />
+                    <img src="/assets/images/logo.png" alt="Logo" class="mx-auto h-20 w-20" />
                     <h2 class="text-2xl font-extrabold">Welcome to Codewing</h2>
                     <!-- <p class="text-lg">Create your account and start building amazing websites without coding.</p> -->
                 </div>

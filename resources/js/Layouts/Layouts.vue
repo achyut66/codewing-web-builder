@@ -31,7 +31,7 @@ const user = usePage().props.auth.user;
   <!-- Sidebar -->
   <aside class="w-64 bg-gray-300 shadow-md hidden md:block fixed inset-y-0 left-0 z-20">
     <div class="p-6">
-      <img src="/build/images/logo.png" alt="Logo" class="h-30 mb-6" />
+      <img src="/assets/images/logo.png" alt="Logo" class="h-30 mb-6" />
       <nav class="space-y-4 ml-6">
         <Link href="/dashboard" class="block text-gray-700 font-medium hover:text-blue-600">My Sites</Link>
         <Link href="/view-templates" class="block text-gray-700 font-medium hover:text-blue-600">Templates</Link>
